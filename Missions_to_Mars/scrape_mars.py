@@ -4,30 +4,26 @@ from splinter import Browser
 from bs4 import BeautifulSoup
 import requests
 import re
+import time
 
 def scrape_info():
-    
+
    #Scrape the Nasa News
-    url_nasa_news = "https://mars.nasa.gov/news/"
-    nasa_news_response = requests.get(url_nasa_news)
-    soup = BeautifulSoup(nasa_news_response.text, 'lxml')
-
-
-    #Save News title and paragraph
-    url_nasa_news = "https://mars.nasa.gov/news/"
-    nasa_news_response = requests.get(url_nasa_news)
-    soup = BeautifulSoup(nasa_news_response.text, 'lxml')
-
-    #first class with content_title was giving "Mars now"
-    news_title = soup.find_all("div", class_= "content_title")[0].text
-    news_p = soup.find_all("div", class_= "rollover_description_inner")[0].text
-    
-    print(news_title)
-    print(news_p)
-
     #execute browser for navigation
     executable_path = {'executable_path': 'chromedriver.exe'}
     browser = Browser('chrome', **executable_path, headless=False)
+
+    #Save News title and paragraph
+    url_nasa_news = "https://mars.nasa.gov/news/"
+    browser.visit(url_nasa_news)
+    time.sleep(10)
+    html=browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+    news_title = soup.find_all("div", class_= "content_title")[1].text
+    news_p = soup.find("div", class_= "article_teaser_body").text
+    print(news_title)
+    print(news_p)
+    
 
     #JPL Mars Space Images - Featured Image
     url_mars_image = "https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars"
